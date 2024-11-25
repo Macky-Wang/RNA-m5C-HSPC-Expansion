@@ -1,0 +1,36 @@
+###Figure S5B
+rm(list=ls())
+setwd("/Users/macky/Documents/课题和课题数据及代码/SGG_sc-m5C_zebrafish/20230727_zonghe_analysis/YBX1_target/")
+###YBX1 target region distribution
+a1<-read.table("YBX1_target/utr5-num")
+b1<-read.table("YBX1_target/cds-num")
+c1<-read.table("YBX1_target/utr3-num")
+
+x1<-c(a1$V1,b1$V1+100,c1$V1+200)
+y1<-c(a1$V2,b1$V2,c1$V2)
+
+###RNA m5C sites distribution
+a2<-read.table("m5C/utr5-num")
+b2<-read.table("m5C/cds-num")
+c2<-read.table("m5C/utr3-num")
+
+x2<-c(a2$V1,b2$V1+100,c2$V1+200)
+y2<-c(a2$V2,b2$V2,c2$V2)
+
+pdf("merge_pattern.pdf",height=5,width=7)
+par(mar=c(3,6,1,1),lwd=2)
+plot(smooth.spline(x1,y1,df=20)$x,smooth.spline(x1,y1,df=20)$y,type="l",xaxt="n",xlab="",ylab=expression("Density (10"^"-2"*")"),bty="o",ylim=c(0,1.3),col="#8da0cb",lwd=3,main=" ",cex.axis=1.5, cex.lab=1.5)
+points(smooth.spline(x2,y2,df=20)$x,smooth.spline(x2,y2,df=20)$y,type="l", col="#66c2a5",lwd=3);
+
+mtext("5'UTR",side=1,line=1.2,at=50,font=1,cex=1.5)
+mtext("CDS",side=1,line=1.2,at=150,font=1,cex=1.5)
+mtext("3'UTR",side=1,line=1.2,at=250,font=1,cex=1.5)  #font=2:fold, font=4:fold&italy
+
+axis(1,at=c(0,99,199,299),label=c("","","",""))
+#axis(2,at=c(0,1,2),label=c("0","1","2"),las=2)
+
+abline(v=99,lty=2,col="#fc8d62",lwd=3)
+abline(v=199,lty=2,col="#fc8d62",lwd=3)
+
+legend("topleft",c("Ybx1 target","RNA m5C"),lwd=c(rep(2,2)),col=c("#8da0cb","#66c2a5"),cex=1.3,bty = "n")
+dev.off()

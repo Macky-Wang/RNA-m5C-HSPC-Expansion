@@ -1,0 +1,48 @@
+###Figure 4B
+rm(list=ls())
+
+library(clusterProfiler)
+library("org.Dr.eg.db")
+data<-read.table("Ybx1_target_KD_logFC.txt", header=T)
+colnames(data)<-c("ENSEMBL","logFC")
+gene_entrezid <- bitr(geneID = data$ENSEMBL
+                         , fromType = "ENSEMBL" # 从ENSEMBL
+                         , toType = "ENTREZID" # 转成ENTREZID
+                         , OrgDb = "org.Dr.eg.db"
+                         )
+
+data2 <- merge(data,gene_entrezid,by.y = "ENSEMBL")
+
+geneList<-data2$logFC
+names(geneList)<-data2$ENTREZID
+geneList<-sort(geneList, decreasing = T)
+
+library(msigdbr)
+m_t2g <- msigdbr(species = "Danio rerio", category = "C5") %>% 
+  dplyr::select(gs_name, entrez_gene)
+
+
+gsea_res <- GSEA(geneList, 
+                 TERM2GENE = m_t2g,
+                 minGSSize = 10,
+                 maxGSSize = 500,
+                 pvalueCutoff = 0.05,
+                 pAdjustMethod = "BH",
+                 seed = 456
+                 )
+write.table(gsea_res, file="gsea_results.txt", quote=F, sep="\t")
+
+library(enrichplot)
+library(ggplot2)
+
+####同时展示两个通路
+p <- gseaplot2(gsea_res,geneSetID = c(60,112),
+               base_size = 10,
+               color = c("#e41a1c", "#377eb8")
+               )
+p[[1]] <- p[[1]]+
+  geom_hline(yintercept = 0,color="grey75", linewidth=0.8,linetype=2)+
+  theme(legend.position = "top")
+#p[[2]] <- p[[2]]+scale_color_viridis_d()
+p[[3]] <- p[[3]]+geom_hline(yintercept = 0,color="steelblue", linewidth=0.5,linetype=2)
+ggsave(p, file="GSEA_results.pdf", width=4, height=5)

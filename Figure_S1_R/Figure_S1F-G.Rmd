@@ -1,0 +1,7 @@
+###Figure S1F-G
+rm(list=ls())
+data<-read.table("merge.rpkm", header=T, row.names=1)
+data<-subset(data,data$Rep1>0)
+pdf("Nascent_cor.pdf", width=3, height = 4)
+smoothScatter(log2(data$Rep1+1),log2(data$Rep2+1), nrpoints=0, ylim = c(0,20), xlim = c(0,20)) 
+dev.off()

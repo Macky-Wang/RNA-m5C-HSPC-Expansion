@@ -1,0 +1,20 @@
+###Figure 5B
+rm(list=ls())
+library(enrichplot)
+library(clusterProfiler)
+library(org.Dr.eg.db)
+library(patchwork)
+library(ReactomePA)
+setwd("/Users/macky/Documents/课题和课题数据及代码/SGG_sc-m5C_zebrafish/20230822_zonghe_analysis/Ybx1_target_m5C")
+data<-read.table("Ybx1_target_m5C_mRNA_DEG_down_ID.txt", header=F, stringsAsFactors = F)
+gene<-data$V2
+
+res <- enrichGO(gene, OrgDb = org.Dr.eg.db, ont = "BP",keyType = "SYMBOL")
+
+categorys <- c("chromatin remodeling", "mitotic cell cycle process", "cell cycle DNA replication")
+
+pdf("cell_cycle_go_net.pdf", width=5, height=4)
+cnetplot(res, foldChange=NULL,showCategory = categorys, colorEdge = T,layout = "circle", node_lable="gene",
+         cex_label_category	=1, cex_label_gene= 1, color_category = c("#984ea3"), color_gene=c("#ff7f00")
+)
+dev.off()

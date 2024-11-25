@@ -1,0 +1,35 @@
+###Figure S4F
+rm(list=ls())
+library(gplots)
+library(ComplexHeatmap)
+
+data<-read.table("cell_cycle_gene_debatch.rpkm", header=T, row.names = 1, stringsAsFactors = F)
+data<-subset(data, data$Condition!="Stable")
+
+#####只展示特定基因名
+genes<-c("ENSDARG00000011094","ENSDARG00000101637","ENSDARG00000102798","ENSDARG00000024204","ENSDARG00000057683","ENSDARG00000091150")
+genes<-as.data.frame(genes)
+
+data<-as.matrix(data[,1:4])
+for (i in 1:nrow(data)) data[i, ] <- scale(log(unlist(data[i, ] + 1), 2)) #对数据进行标准化处理
+
+##添加分组信息
+samples <- rep(c('Down_DEG', 'Up_DEG'), c(109, 17))
+
+B <- Heatmap(exp,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        col = colorpanel(60,"#377eb8","white","#e41a1c"),
+        show_row_names = F,
+        row_split = rep(c("Down_DEG", "Up_DEG"), c(109,17)),
+        row_gap = unit(1, "mm"),
+        border = TRUE,
+      #  right_annotation = rowAnnotation(Group = samples,simple_anno_size = unit(2, 'mm'),
+      #                                   col = list(Group = c('Down_DEG' = '#377eb8', 'Up_DEG' = '#e41a1c')))
+)
+
+pdf("heatmap_cell_cycle_DEG_RPKM.pdf", width = 4, height = 7)
+B + rowAnnotation(link = anno_mark(at = which(rownames(exp) %in% genes$genes), 
+                                      labels = genes$genes, labels_gp = gpar(fontsize = 10)))
+dev.off()
+          

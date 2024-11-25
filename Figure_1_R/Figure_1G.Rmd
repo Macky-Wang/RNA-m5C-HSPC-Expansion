@@ -1,0 +1,24 @@
+###Figure 1G
+rm(list=ls())
+library(ggplot2)
+library(reshape2)
+
+data<-read.table("ggplot_DMG.log2FC", header=F, stringsAsFactors = F)
+colnames(data)<-c("level","log2FC")
+data$level<-factor(data$level, levels=unique(data$level))
+p<-ggplot(data,aes(x=log2FC,color=level))+
+  stat_ecdf(geom="smooth", se=F, size=1.2)+
+  scale_color_brewer(palette = "Set1")+
+  labs(title="",x="log2(FoldChange)",y="Cumulative fraction")+
+  theme(title=element_text(size=15),axis.title.y=element_text(size=15))+
+  theme(axis.text.x = element_text(size = 15, colour = "black"))+ 
+  theme(axis.text.y = element_text(size = 15, colour = "black"))+
+  theme(legend.title = element_blank(), legend.position = c(0.9,0.3), legend.text=element_text(colour="black",size=12),legend.key=element_blank())+
+  theme(axis.ticks.length.y = unit(0.3,"cm"),axis.ticks.length.x = unit(0.3,"cm"))+
+  theme(panel.background = element_blank(),panel.grid.major = element_blank(),panel.border =    element_rect(color="Black",fill=NA,size=1.5))+
+  xlim(-4,4)
+
+####多组间秩和检验 
+pairwise_wilcox_test (data, log2FC ~ level) 
+
+ggsave(p,file="DMG_log2FC.pdf",height=4,width=4)

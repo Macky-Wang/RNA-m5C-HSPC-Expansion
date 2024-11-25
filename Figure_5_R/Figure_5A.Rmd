@@ -1,0 +1,11 @@
+###Figure 5A
+rm(list=ls())
+library(pheatmap)
+
+##debatch RPKM
+data<-read.table("filter_down_cell_cycle_gene_debatch.rpkm", header=T, row.names = 1, stringsAsFactors = F)
+
+pdf("pheatmap_cell_cycle_gene_rpkm.pdf", width=3, height = 6)
+pheatmap(data,scale="row", cluster_cols = F, cluster_rows = F, border_color = "gray", color=colorpanel(60,"#377eb8","white","#e41a1c"))
+dev.off()
+

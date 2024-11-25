@@ -1,0 +1,15 @@
+###Figure S1C
+data<-read.table("merge_all_coverage_methRate.txt", header=T, stringsAsFactors = F)
+p<-ggplot(data = data, mapping = aes(x = methRate, y = log2(coverage))) +
+  geom_point(aes(color=methRate),size=0.2)+
+  scale_color_gradient(low = "#ff7f00", high = "#e41a1c")+
+  labs(x="m5C level", y="log2Coverage")+
+  ylim(log2(10),7.5)+
+  theme(axis.title.y=element_text(size=10))+
+    theme(axis.text.x = element_text(size = 10,color="black"))+ 
+    theme(axis.text.y = element_text(size = 10,color="black"))+
+  theme(legend.position = "none")+
+  theme(axis.ticks.length.y = unit(0.3,"cm"),axis.ticks.length.x = unit(0.3,"cm"))+
+    theme(panel.background = element_blank(),panel.grid.major = element_blank(),panel.border =    element_rect(color="Black",fill=NA,size=1))
+ggsave(p, file="merge_all_coverage_methRate.pdf", width=3,height =3)
+cor(data$coverage, data$methRate) #R=0.009476169

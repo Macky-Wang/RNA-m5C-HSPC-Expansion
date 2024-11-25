@@ -1,0 +1,46 @@
+###Figure S1D
+rm(list=ls())
+
+####AGM HSPC
+a1<-read.table("AGM/utr5-num")
+b1<-read.table("AGM/cds-num")
+c1<-read.table("AGM/utr3-num")
+
+x1<-c(a1$V1,b1$V1+100,c1$V1+200)
+y1<-c(a1$V2,b1$V2,c1$V2)
+
+###CHT HSPC
+a2<-read.table("CHT/utr5-num")
+b2<-read.table("CHT/cds-num")
+c2<-read.table("CHT/utr3-num")
+
+x2<-c(a2$V1,b2$V1+100,c2$V1+200)
+y2<-c(a2$V2,b2$V2,c2$V2)
+
+###KM HSPC
+a3<-read.table("KM/utr5-num")
+b3<-read.table("KM/cds-num")
+c3<-read.table("KM/utr3-num")
+
+x3<-c(a3$V1,b3$V1+100,c3$V1+200)
+y3<-c(a3$V2,b3$V2,c3$V2)
+
+pdf("merge_m5C_pattern.pdf",height=4,width=5)
+par(mar=c(3,6,1,1),lwd=2)
+plot(smooth.spline(x1,y1,df=20)$x,smooth.spline(x1,y1,df=20)$y,type="l",xaxt="n",xlab="",ylab=expression("Density (10"^"-2"*")"),bty="o",ylim=c(0,1.3),col="#e41a1c",lwd=3,main=" ",cex.axis=1.5, cex.lab=1.5)
+points(smooth.spline(x2,y2,df=20)$x,smooth.spline(x2,y2,df=20)$y,type="l", col="#377eb8",lwd=3);
+points(smooth.spline(x3,y3,df=20)$x,smooth.spline(x3,y3,df=20)$y,type="l", col="#4daf4a",lwd=3);
+
+mtext("5'UTR",side=1,line=1.2,at=50,font=1,cex=1.5)
+mtext("CDS",side=1,line=1.2,at=150,font=1,cex=1.5)
+mtext("3'UTR",side=1,line=1.2,at=250,font=1,cex=1.5)  #font=2:fold, font=4:fold&italy
+
+axis(1,at=c(0,99,199,299),label=c("","","",""))
+#axis(2,at=c(0,1,2),label=c("0","1","2"),las=2)
+
+abline(v=99,lty=2,col="#ea5a49",lwd=3)
+abline(v=199,lty=2,col="#ea5a49",lwd=3)
+
+legend("topleft",c("AGM","CHT","KM"),lwd=c(rep(2,2)),col=c("#e41a1c","#377eb8","#4daf4a"),cex=1.3,bty = "n")
+dev.off()
+

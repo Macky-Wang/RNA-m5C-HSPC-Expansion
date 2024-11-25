@@ -1,0 +1,41 @@
+###Figure 1C
+rm(list=ls())
+library(pheatmap)
+library(gplots)
+
+data<-read.table("merge_all_gene.level", header=T, row.names=1, check.names = F, stringsAsFactors = F, sep="\t")
+
+pdf("heatmap_merge_all_gene_level.pdf")
+pheatmap(data[,], 
+         scale = "row", 
+         cutree_rows = 6, 
+         show_rownames = F, 
+         cluster_cols = F, 
+         #treeheight_row = 0, 
+         color=colorpanel(60,"#377eb8","white","#e41a1c"))
+dev.off()
+
+####输出所有基因在6个cluster中的分布
+list=pheatmap(data,scale = "row")
+row_cluster=cutree(list$tree_row,k=6)
+newOrder=data[list$tree_row$order,]
+newOrder[,ncol(newOrder)+1]=row_cluster[match(rownames(newOrder),names(row_cluster))]
+colnames(newOrder)[ncol(newOrder)]="Cluster"
+write.table(newOrder, file="merge_all_gene_level_with_cluster.txt", quote=F, row.names = T, sep="\t")
+
+###提取各个cluster中基因list
+cluster1<-rownames(subset(newOrder, newOrder$Cluster==1))
+cluster2<-rownames(subset(newOrder, newOrder$Cluster==2))
+cluster3<-rownames(subset(newOrder, newOrder$Cluster==3))
+cluster4<-rownames(subset(newOrder, newOrder$Cluster==4))
+cluster5<-rownames(subset(newOrder, newOrder$Cluster==5))
+cluster6<-rownames(subset(newOrder, newOrder$Cluster==6))
+
+write.table(cluster1, file="cluster1_gene.txt", quote = F, row.names = F, col.names = F)
+write.table(cluster2, file="cluster2_gene.txt", quote = F, row.names = F, col.names = F)
+write.table(cluster3, file="cluster3_gene.txt", quote = F, row.names = F, col.names = F)
+write.table(cluster4, file="cluster4_gene.txt", quote = F, row.names = F, col.names = F)
+write.table(cluster5, file="cluster5_gene.txt", quote = F, row.names = F, col.names = F)
+write.table(cluster6, file="cluster6_gene.txt", quote = F, row.names = F, col.names = F)
+
+###DAVID富集分析各个cluster内基因BP功能

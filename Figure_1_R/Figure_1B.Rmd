@@ -1,0 +1,26 @@
+###Figure 1B
+rm(list=ls())
+library(ggplot2)
+library(reshape2)
+library(ggpubr)
+
+data<-read.table("merge_m5C_gene.level", header=F, stringsAsFactors = F, check.names = F)
+colnames(data)<-c("sample","level")
+data$sample<-factor(data$sample, levels=unique(data$sample))
+my_comparisons <- list( c("AGM", "CHT"), c("CHT", "KM"), c("AGM", "KM") )
+p<-ggplot(data, aes(sample, level, fill=sample))+
+  stat_boxplot(geom = "errorbar", lwd=0.5, width=0.2)+
+  geom_boxplot(width=0.6, outlier.color = NA)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(legend.position = "none")+
+  ylim(0,2.0)+
+  labs(title="",x="",y="mRNA m5C level")+
+  theme(title=element_text(size=10),axis.title.y=element_text(size=10))+
+  theme(axis.text.x = element_text(size = 10, color = "black"))+ 
+  theme(axis.text.y = element_text(size = 10, color = "black"))+
+  theme(axis.ticks.length.y = unit(0.3,"cm"),axis.ticks.length.x = unit(0.3,"cm"))+
+  stat_compare_means(comparisons = my_comparisons)+ # Add pairwise comparisons p-value
+  stat_compare_means(label.y = 1.8)+  # Add global p-value
+  theme(panel.background = element_blank(),panel.grid.major = element_blank(),panel.border = element_rect(color="Black",fill=NA,size=1))
+
+ggsave(p, file="merge_m5C_gene_level.pdf", width=4, height=4)

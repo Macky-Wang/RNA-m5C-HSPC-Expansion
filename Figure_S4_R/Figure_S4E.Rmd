@@ -1,0 +1,12 @@
+###Figure S4E
+rm(list = ls())
+
+data<-read.table("target_region.txt",header=F, stringsAsFactors = F)
+rownames(data)<-c("5'UTR","CDS","3'UTR","Intron","ncRNA")
+info<-as.vector(data[,1])
+piepercent = paste(round(100*info/sum(info)), "%")
+color<-c("#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854")
+
+pdf("pie_Ybx1_target_region.pdf")
+pie(data[,1],labels = paste(piepercent,rownames(data)),radius=0.8,cex=1.4,lwd=1.5,col = color,family="Times",font=2)
+dev.off()

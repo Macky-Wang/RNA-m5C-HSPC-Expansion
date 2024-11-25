@@ -1,0 +1,8 @@
+###Figure S5A
+
+#YBX2 target mRNA: 4173
+#m5C-mRNA: 1751
+#overlap: 732
+#background : 15260 fCHT HSPC平均表达水平≥ 1
+phyper(731, 4173, 15260-4173, 1751, lower.tail=F)
+##4.081501e-44

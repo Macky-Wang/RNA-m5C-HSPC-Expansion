@@ -1,0 +1,22 @@
+###Figure 5K
+rm(list=ls())
+library(ggplot2)
+library(ggpubr)
+
+data<-read.table("ggplot_m5C_cell_cycle.fc", header=F, stringsAsFactors = F)
+colnames(data)<-c("ID","log2FC","condition")
+data$condition<-factor(data$condition, levels=unique(data$condition))
+p<-ggplot(data, aes(condition, log2FC,fill=condition))+
+  stat_boxplot(geom="errorbar", width=0.3)+
+  geom_boxplot(width=0.6, outlier.shape = NA)+
+  scale_fill_manual(values=c("#e41a1c","#b3e2cd"))+
+  stat_compare_means()+
+  labs(title="",x="mRNAs involved in cell cycle",y="log2FC (Ybx1 MO/uninjected)")+
+  theme(axis.ticks.length.y = unit(0.3,"cm"),axis.ticks.length.x = unit(0.3,"cm"))+
+  ylim(-2,2)+
+  theme(title=element_text(size=10),axis.title.y=element_text(size=10))+
+  theme(axis.text.x = element_text(size=10, colour = "black"))+ 
+  theme(axis.text.y = element_text(size=10, colour = "black"))+
+  theme(legend.position = "none")+
+  theme(panel.background = element_blank(),panel.grid.major = element_blank(),panel.border =  element_rect(color="Black",fill=NA,size=1.5))
+ggsave(p, file="boxplot_m5C_cell_cycle_fc.pdf", width=4, height=4)

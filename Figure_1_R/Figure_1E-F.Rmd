@@ -1,0 +1,16 @@
+###Figure 1E-F
+data<-read.table("DMG_up_metascape.txt", header=T, stringsAsFactors = F, sep="\t")
+data_pvalue <- (-(as.numeric(data$LogP)))
+names(data_pvalue)<-data[,1];
+all_pv<-sort(unique(data_pvalue));
+col_data_pvalue <- NULL;
+for(i in 1:length(data_pvalue))
+{
+  col_data_pvalue<-c(col_data_pvalue,which(all_pv==data_pvalue[i]));
+}
+
+pdf("DMG_up_metascape.pdf",height=4,width=6)
+par(mar=c(5,22,6,1),lwd=3);
+barplot(rev(data_pvalue),horiz=T,las=1,cex.names=1,xlim=c(0,6),space=0.5,col="#fc8d62",xlab="-log10(P value)",xaxt="n");
+axis(1,at=c(0,3,6),lwd=3,tcl=-1)
+dev.off()

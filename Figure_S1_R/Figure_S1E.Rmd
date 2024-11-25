@@ -1,0 +1,40 @@
+###Figure S1E
+rm(list=ls())
+library(ggplot2)
+library(reshape2)
+
+data<-read.table("merge_m5C_region.txt", header=T, row.names=1, stringsAsFactors = F, check.names = F)
+data_t<-as.data.frame(t(data))
+#第1行必须包含每个变量的最大值
+#第2行必须包含每个变量的最小值
+# 定义变量最大最小值
+max_min <- data.frame(
+  utr5 = c(2020, 61), cds = c(2020, 61), utr3 = c(2020, 61),
+  intron = c(2020, 61))
+rownames(max_min) <- c("Max", "Min")
+# 合并数据
+df <- rbind(max_min, data_t)
+
+##雷达图
+library(fmsb)
+
+pdf("merge_m5C_region_radar.pdf", width=4, height=4)
+radarchart(
+  df, axistype = 1,
+  # Customize the polygon
+  pcol = c("#e41a1c", "#377eb8", "#4daf4a"), pfcol = scales::alpha(c("#e41a1c", "#377eb8", "#4daf4a"),0.3), plwd = 2, plty = 1,
+  # Customize the grid
+  cglcol = "grey", cglty = 1, cglwd = 0.8,
+  # Customize the axis
+  axislabcol = "grey", 
+  # Variable labels
+  vlcex = 0.7, vlabels = colnames(df),
+  #caxislabels = c(0, 5, 10, 15, 20)
+  )
+# Add an horizontal legend
+legend(
+  x = "top", legend = rownames(df[-c(1,2),]), horiz = TRUE,
+  bty = "n", pch = 20 , col = c("#e41a1c", "#377eb8", "#4daf4a"),
+  text.col = "black", cex = 1, pt.cex = 1.5
+)
+dev.off()
